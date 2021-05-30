@@ -46,18 +46,30 @@ export default class TextEditor extends Component {
 
       switch (e.key) {
         case 'b': {
-          change.toggleMark('bold')
-          return true
+          change.toggleMark('bold');
+          return true;
         }
         case 'i': {
-          change.toggleMark('italic')
-          return true
-        }  
+          change.toggleMark('italic');
+          return true;
+        }
+        case 'c': {
+          change.toggleMark('code');
+          return true;
+        }
+        case 'l': {
+          change.toggleMark('list');
+          return true;
+        }
+        case 'u': {
+          change.toggleMark('underline');
+          return true;
+        }      
         default: {
           return;
         }
       }
-  }
+  };
 
   renderMark = props => {
     switch (props.mark.type) {
@@ -67,17 +79,43 @@ export default class TextEditor extends Component {
         case 'italic':
           return <ItalicMark {...props} />
         
+        case 'code':
+          return <code {...props.attributes}>{props.children} </code>;
+        
+        case 'list':
+          return(
+              <ul {...props.attributes}>
+                    <li>{props.children}</li>
+              </ul>
+          );
+
+          case 'underline':
+            return <u {...props.attributes}>{props.children}</u>;
+        
           default: {
             return;
           }
     }
+  };
+
+  onMarkClick = (e, type) => {
+    e.preventDefault();
+
+    const { value } = this.state;
+    const change = value.change().toggleMark(type);
+
+    this.onChange(change);
   }
+
 
   render() {
     return(
       <Fragment>
         <FormatToolbar>
-          <button className="tooltip-icon-button">
+          <button 
+            onPointerDown={(e) => this.onMarkClick(e, bold)}
+            className="tooltip-icon-button"
+          >
             <Icon icon={bold} />
           </button>
           <button className="tooltip-icon-button">
